@@ -30,7 +30,9 @@ const userSchema = new mongoose.Schema({
 
   subscription: {
     id: String,
-    status: String,
+    status: {
+      type:String,
+    }
   },
 
   avatar: {
