@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema({
     id: String,
     status: {
       type:String,
+      default:"Not Active"
     }
   },
 

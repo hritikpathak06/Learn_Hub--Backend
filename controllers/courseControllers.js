@@ -8,7 +8,6 @@ const cloudinary = require("cloudinary");
 exports.getAllCourses = catchAsyncError(async (req, res, next) => {
   const keyword = req.query.keyword || "";
   const category = req.query.category || "";
-
   const courses = await Course.find({
     title: {
       $regex: keyword,
@@ -111,6 +110,7 @@ exports.deleteCourse = catchAsyncError(async (req, res, next) => {
     message: "Course Deleted Successfully",
   });
 });
+
 
 // Delete Course Lecture Controller
 exports.deleteCourseLecture = catchAsyncError(async (req, res, next) => {
