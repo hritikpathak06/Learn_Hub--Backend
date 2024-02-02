@@ -64,33 +64,70 @@ exports.getCourseLectures = catchAsyncError(async (req, res, next) => {
 });
 
 // Add Course Lectures Controller
-exports.addCourseLecture = catchAsyncError(async (req, res, next) => {
-  const { title, description } = req.body;
-  const course = await Course.findById(req.params.id);
-  if (!course) {
-    return next(new ErrorHandler("Course Not Found", 404));
+// exports.addCourseLecture = catchAsyncError(async (req, res, next) => {
+//   const { title, description } = req.body;
+//   const course = await Course.findById(req.params.id);
+//   if (!course) {
+//     return next(new ErrorHandler("Course Not Found", 404));
+//   }
+//   // Max video size 100mb
+//   const file = req.file;
+//   const fileUri = getDataUri(file);
+//   const myCloud = await cloudinary.v2.uploader.upload(fileUri.content, {
+//     resource_type: "video",
+//   });
+//   course.lectures.push({
+//     title,
+//     description,
+//     video: {
+//       public_id: myCloud.public_id,
+//       url: myCloud.secure_url,
+//     },
+//   });
+//   course.numOfVideos = course.lectures.length;
+//   await course.save();
+//   res.status(200).json({
+//     success: true,
+//     message: "Lecture Added Into The Course",
+//   });
+// });
+
+exports.addCourseLecture = async (req, res, next) => {
+  try {
+    const { title, description } = req.body;
+    const course = await Course.findById(req.params.id);
+    if (!course) {
+      return next(new ErrorHandler("Course Not Found", 404));
+    }
+    // Max video size 100mb
+    const file = req.file;
+    const fileUri = getDataUri(file);
+    const myCloud = await cloudinary.v2.uploader.upload(fileUri.content, {
+      resource_type: "video",
+    });
+    course.lectures.push({
+      title,
+      description,
+      video: {
+        public_id: myCloud.public_id,
+        url: myCloud.secure_url,
+      },
+    });
+    course.numOfVideos = course.lectures.length;
+    await course.save();
+    res.status(200).json({
+      success: true,
+      message: "Lecture Added Into The Course",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: error,
+    });
   }
-  // Max video size 100mb
-  const file = req.file;
-  const fileUri = getDataUri(file);
-  const myCloud = await cloudinary.v2.uploader.upload(fileUri.content, {
-    resource_type: "video",
-  });
-  course.lectures.push({
-    title,
-    description,
-    video: {
-      public_id: myCloud.public_id,
-      url: myCloud.secure_url,
-    },
-  });
-  course.numOfVideos = course.lectures.length;
-  await course.save();
-  res.status(200).json({
-    success: true,
-    message: "Lecture Added Into The Course",
-  });
-});
+};
+
 
 // Delete Course Controller
 exports.deleteCourse = catchAsyncError(async (req, res, next) => {
@@ -110,7 +147,6 @@ exports.deleteCourse = catchAsyncError(async (req, res, next) => {
     message: "Course Deleted Successfully",
   });
 });
-
 
 // Delete Course Lecture Controller
 exports.deleteCourseLecture = catchAsyncError(async (req, res, next) => {
