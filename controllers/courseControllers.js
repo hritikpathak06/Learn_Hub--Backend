@@ -3,6 +3,7 @@ const Course = require("../models/courseModel");
 const getDataUri = require("../utils/dataUri");
 const ErrorHandler = require("../utils/errorHandler");
 const cloudinary = require("cloudinary");
+const Stats = require("../models/statsModel");
 
 // Get All Courses Controller
 exports.getAllCourses = catchAsyncError(async (req, res, next) => {
@@ -128,7 +129,6 @@ exports.addCourseLecture = async (req, res, next) => {
   }
 };
 
-
 // Delete Course Controller
 exports.deleteCourse = catchAsyncError(async (req, res, next) => {
   const { id } = req.params;
@@ -175,4 +175,17 @@ exports.deleteCourseLecture = catchAsyncError(async (req, res, next) => {
     success: true,
     message: "Lecture Deleted Successfully",
   });
+});
+
+Course.watch().on("change", async () => {
+  const stats = await Stats.find({}).sort({ createdAt: "desc" }).limit(1);
+  const courses = await Course.find({});
+  totalViews = 0;
+  for (let i = 0; i < courses.length; i++) {
+    const course = courses[i];
+    totalViews += course.views;
+  }
+  stats[0].views = totalViews;
+  stats[0].createdAt = new Date(Date.now())
+  await stats[0].save()
 });

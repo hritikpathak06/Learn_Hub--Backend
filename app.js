@@ -26,11 +26,13 @@ app.use(cors({
 const courseRoutes = require("./routes/courseRoutes");
 const userRoutes = require("./routes/userRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
+const otherRoutes = require("./routes/otherRoutes");
 
 // Routes
 app.use("/api/v1",courseRoutes);
 app.use("/api/v1",userRoutes);
 app.use("/api/v1",paymentRoutes);
+app.use("/api/v1",otherRoutes);
 
 
 

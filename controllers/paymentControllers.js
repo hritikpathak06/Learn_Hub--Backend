@@ -75,6 +75,7 @@ exports.getRazorPayKey = catchAsyncError(async (req, res, next) => {
   });
 });
 
+
 // Cancel Subscription
 exports.cancelSubscription = async (req, res) => {
   try {
@@ -88,15 +89,6 @@ exports.cancelSubscription = async (req, res) => {
         message: "Subscription is already cancelled.",
       });
     }
-
-    // Check if the subscription is in a cancellable state
-    // if (!canCancelSubscription(user.subscription.status)) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Subscription cannot be cancelled in the current status.",
-    //   });
-    // }
-    // Attempt to cancel the subscription
     await instance.subscriptions.cancel(subscriptionId);
     user.subscription.id = undefined;
     user.subscription.status = "cancelled";

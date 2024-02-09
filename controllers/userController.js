@@ -4,6 +4,7 @@ const ErrorHandler = require("../utils/errorHandler");
 const Course = require("../models/courseModel");
 const getDataUri = require("../utils/dataUri");
 const cloudinary = require("cloudinary");
+const Stats = require("../models/statsModel");
 
 // Register User Controller
 exports.registerUser = catchAsyncError(async (req, res, next) => {
@@ -232,4 +233,13 @@ exports.deleteUser = catchAsyncError(async (req, res, next) => {
     success: true,
     message: "User Deleted Successfully",
   });
+});
+
+User.watch().on("change", async () => {
+  const stats = await Stats.find({}).sort({ createdAt: "desc" }).limit(1);
+  const subscriprion = await User.find({ "subscription.status": "active" });
+  stats[0].users = await User.countDocuments();
+  stats[0].subscription = subscriprion.length;
+  stats[0].createdAt = new Date(Date.now());
+  await stats[0].save();
 });

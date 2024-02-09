@@ -4,6 +4,8 @@ const dotenv = require("dotenv");
 const connectDB = require("./db/database");
 const cloudinary = require("cloudinary");
 const RazorPay = require("razorpay");
+const nodeCron = require("node-cron");
+const Stats = require("./models/statsModel")
 
 // Main Config
 dotenv.config();
@@ -16,11 +18,13 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// RazorPay Config
-// exports.instance = new RazorPay({
-//   key_id: process.env.RAZORPAY_API_KEY,
-//   key_secret: process.env.RAZORPAY_API_SECRET,
-// });
+nodeCron.schedule("0 0 0 1 * *",async() => {
+  try {
+    await Stats.create({});
+  } catch (error) {
+    console.log(error)
+  }
+});
 
 
 // Port Config
@@ -28,7 +32,7 @@ const port = process.env.PORT || 8080;
 
 // Local Server Demo
 app.get("/", (req, res) => {
-  res.send("Server Working Properly || Origin Chnaged");
+  res.send("Server Working Properly || Origin Chnaged || Stats Added");
 });
 
 // Listening the port
