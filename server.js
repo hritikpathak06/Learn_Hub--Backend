@@ -26,7 +26,6 @@ nodeCron.schedule("0 0 0 1 * *",async() => {
   }
 });
 
-
 // Port Config
 const port = process.env.PORT || 8080;
 

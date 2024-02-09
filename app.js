@@ -15,8 +15,8 @@ app.use(cookieParser());
 
 
 app.use(cors({
-    // origin:"http://localhost:3000",
-    origin:"https://learnhub-tau.vercel.app",
+    origin:"http://localhost:3000",
+    // origin:"https://learnhub-tau.vercel.app",
     credentials:true
 }));
 

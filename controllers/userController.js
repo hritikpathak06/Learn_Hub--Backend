@@ -237,9 +237,11 @@ exports.deleteUser = catchAsyncError(async (req, res, next) => {
 
 User.watch().on("change", async () => {
   const stats = await Stats.find({}).sort({ createdAt: "desc" }).limit(1);
-  const subscriprion = await User.find({ "subscription.status": "active" });
+
+  const subscription = await User.find({ "subscription.status": "active" });
   stats[0].users = await User.countDocuments();
-  stats[0].subscription = subscriprion.length;
+  stats[0].subscription = subscription.length;
   stats[0].createdAt = new Date(Date.now());
+
   await stats[0].save();
 });
